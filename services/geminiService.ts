@@ -21,6 +21,8 @@ const forecastSchema = {
 const weatherSchema = {
     type: Type.OBJECT,
     properties: {
+        latitude: { type: Type.NUMBER, description: "The latitude of the location." },
+        longitude: { type: Type.NUMBER, description: "The longitude of the location." },
         temperature: { type: Type.STRING, description: "The current temperature in Celsius, e.g., '15°C'" },
         windSpeed: { type: Type.STRING, description: "The current wind speed, e.g., '12 km/h'" },
         precipitation: { type: Type.STRING, description: "The chance of precipitation as a percentage, e.g., '10%'" },
@@ -39,7 +41,7 @@ const weatherSchema = {
         },
     },
     required: [
-        'temperature', 'windSpeed', 'precipitation', 'humidity', 'clouds', 
+        'latitude', 'longitude', 'temperature', 'windSpeed', 'precipitation', 'humidity', 'clouds', 
         'airPressure', 'airQuality', 'sea', 'snowCover', 'thunderstorms', 'windGusts',
         'forecast'
     ]
@@ -47,7 +49,7 @@ const weatherSchema = {
 
 export const fetchWeatherData = async (location: string): Promise<WeatherData> => {
   try {
-    const prompt = `Provide a realistic, detailed weather and atmospheric report and a 7-day forecast for ${location}. Include all the required fields. For the forecast, provide the day of the week, high/low temperature, a summary of air quality, wind speed, a brief description of cloudiness (e.g., 'Sunny', 'Partly Cloudy'), and the chance of rainfall as a percentage.`;
+    const prompt = `Provide the latitude, longitude, a realistic, detailed weather and atmospheric report, and a 7-day forecast for ${location}. Include all the required fields. For the forecast, provide the day of the week, high/low temperature, a summary of air quality, wind speed, a brief description of cloudiness (e.g., 'Sunny', 'Partly Cloudy'), and the chance of rainfall as a percentage.`;
     
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
@@ -62,7 +64,7 @@ export const fetchWeatherData = async (location: string): Promise<WeatherData> =
     const weatherData = JSON.parse(jsonText) as WeatherData;
     
     // Simple validation
-    if (!weatherData.temperature || !weatherData.windSpeed || !weatherData.forecast || weatherData.forecast.length < 7) {
+    if (!weatherData.temperature || !weatherData.forecast || weatherData.forecast.length < 7 || weatherData.latitude === undefined || weatherData.longitude === undefined) {
         throw new Error("Invalid data structure received from API");
     }
     

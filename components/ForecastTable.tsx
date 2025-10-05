@@ -1,13 +1,13 @@
-
 import React from 'react';
 import type { ForecastDay } from '../types';
 import { TemperatureIcon, AirQualityIcon, WindSpeedIcon, CloudsIcon, PrecipitationIcon } from '../constants';
 
 interface ForecastTableProps {
   forecast: ForecastDay[];
+  loading: boolean;
 }
 
-const ForecastTable: React.FC<ForecastTableProps> = ({ forecast }) => {
+const ForecastTable: React.FC<ForecastTableProps> = ({ forecast, loading }) => {
   const headers = [
     { name: 'Day', icon: null },
     { name: 'Temperature', icon: <TemperatureIcon /> },
@@ -37,13 +37,29 @@ const ForecastTable: React.FC<ForecastTableProps> = ({ forecast }) => {
                     </thead>
                     <tbody>
                         {forecast.map((day, index) => (
-                            <tr key={index} className="border-b border-white/5 last:border-b-0 transition-colors hover:bg-white/5">
+                            <tr 
+                                key={index} 
+                                className={`border-b border-white/5 last:border-b-0 transition-colors hover:bg-white/5 ${!loading ? 'animate-fade-in-up' : ''}`}
+                                style={{animationDelay: `${index * 75}ms`}}
+                            >
                                 <td className="p-4 font-bold text-white whitespace-nowrap">{day.day}</td>
-                                <td className="p-4 text-blue-100 whitespace-nowrap">{day.temperature}</td>
-                                <td className="p-4 text-blue-100 whitespace-nowrap">{day.airQualityIndex}</td>
-                                <td className="p-4 text-blue-100 whitespace-nowrap">{day.windSpeed}</td>
-                                <td className="p-4 text-blue-100 whitespace-nowrap">{day.cloudiness}</td>
-                                <td className="p-4 text-blue-100 whitespace-nowrap">{day.rainfall}</td>
+                                {loading ? (
+                                    <>
+                                        <td className="p-4"><div className="h-5 w-28 bg-white/5 rounded placeholder-shimmer" /></td>
+                                        <td className="p-4"><div className="h-5 w-24 bg-white/5 rounded placeholder-shimmer" /></td>
+                                        <td className="p-4"><div className="h-5 w-20 bg-white/5 rounded placeholder-shimmer" /></td>
+                                        <td className="p-4"><div className="h-5 w-24 bg-white/5 rounded placeholder-shimmer" /></td>
+                                        <td className="p-4"><div className="h-5 w-16 bg-white/5 rounded placeholder-shimmer" /></td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td className="p-4 text-blue-100 whitespace-nowrap">{day.temperature}</td>
+                                        <td className="p-4 text-blue-100 whitespace-nowrap">{day.airQualityIndex}</td>
+                                        <td className="p-4 text-blue-100 whitespace-nowrap">{day.windSpeed}</td>
+                                        <td className="p-4 text-blue-100 whitespace-nowrap">{day.cloudiness}</td>
+                                        <td className="p-4 text-blue-100 whitespace-nowrap">{day.rainfall}</td>
+                                    </>
+                                )}
                             </tr>
                         ))}
                     </tbody>

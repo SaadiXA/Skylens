@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
@@ -22,7 +21,7 @@ const Chatbot: React.FC = () => {
             chatRef.current = ai.chats.create({
                 model: 'gemini-2.5-flash',
                 config: {
-                    systemInstruction: 'You are a friendly and knowledgeable weather assistant for the Skylens Weather app. You provide concise and helpful answers about weather, climate, and atmospheric science. When asked for weather in a specific location, provide a brief summary.',
+                    systemInstruction: "You are a friendly and knowledgeable weather assistant for the Skylens Weather app. Your knowledge base includes information from leading atmospheric science projects like NASA's SatCORPS, the BRAMS modeling system, and the Pandora Project. You provide concise and helpful answers about weather, climate, satellite imagery, cloud products, and air quality. When asked for weather in a specific location, provide a brief summary.",
                 },
             });
             setMessages([{ role: 'model', text: 'Hello! How can I help you with the weather today?' }]);
